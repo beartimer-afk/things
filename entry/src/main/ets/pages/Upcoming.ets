@@ -1,4 +1,4 @@
-import { router } from '@kit.ArkUI';
+
 import { Todo, TodoCommands, LifecycleStatus } from '../model/domain';
 import { appStore, todayStr } from '../model/app';
 import { TodoRow } from '../components/TodoRow';
@@ -19,7 +19,7 @@ struct Upcoming {
   build() {
     Column({ space: THINGS_SPACE_MD }) {
       Row({ space: THINGS_SPACE_SM }) {
-        Text('‹').fontSize(22).fontColor(THINGS_COLOR_TEXT_PRIMARY).onClick(() => router.back())
+        Text('‹').fontSize(22).fontColor(THINGS_COLOR_TEXT_PRIMARY).onClick(() => this.getUIContext().getRouter().back())
         Text('Upcoming').fontSize(THINGS_FONT_TITLE).fontWeight(FontWeight.Bold).fontColor(THINGS_COLOR_TEXT_PRIMARY)
       }
       Text('未来承诺时间线（非可 Move 进入的 Folder）')

@@ -1,4 +1,4 @@
-import { router } from '@kit.ArkUI';
+
 import { Todo, TodoCommands, Start, StartMode, LifecycleStatus } from '../model/domain';
 import { appStore, todayStr, tomorrowStr } from '../model/app';
 import { TodoRow } from '../components/TodoRow';
@@ -129,7 +129,7 @@ struct Today {
           Text('‹')
             .fontSize(22)
             .fontColor(THINGS_COLOR_TEXT_PRIMARY)
-            .onClick(() => router.back())
+            .onClick(() => this.getUIContext().getRouter().back())
           Text('Today')
             .fontSize(THINGS_FONT_TITLE)
             .fontWeight(FontWeight.Bold)
@@ -157,7 +157,9 @@ struct Today {
                   onAddChecklist: (title: string) => this.addChecklist(t, title),
                   onOpenWhen: () => { this.activeOverlayTargetId = t.id; this.activeOverlay = 'when'; },
                   onOpenDeadline: () => { this.activeOverlayTargetId = t.id; this.activeOverlay = 'deadline'; },
-                  onOpenTags: () => { this.activeOverlayTargetId = t.id; this.activeOverlay = 'tags'; }
+                  onOpenTags: () => { this.activeOverlayTargetId = t.id; this.activeOverlay = 'tags'; },
+                  onTitleCommit: (title: string) => { TodoCommands.updateTitle(t, title); this.refresh(); },
+                  onNotesCommit: (notes: string) => { TodoCommands.updateNotes(t, notes); this.refresh(); }
                 })
               } else {
                 TodoRow({

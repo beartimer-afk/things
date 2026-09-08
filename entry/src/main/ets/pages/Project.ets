@@ -1,4 +1,4 @@
-import { router } from '@kit.ArkUI';
+
 import { Todo, TodoCommands, LifecycleStatus } from '../model/domain';
 import { appStore } from '../model/app';
 import { TodoRow } from '../components/TodoRow';
@@ -48,7 +48,7 @@ struct Project {
           Text('‹')
             .fontSize(22)
             .fontColor(THINGS_COLOR_TEXT_PRIMARY)
-            .onClick(() => router.back())
+            .onClick(() => this.getUIContext().getRouter().back())
           Text(PROJECT_TITLE)
             .fontSize(THINGS_FONT_TITLE)
             .fontWeight(FontWeight.Bold)
@@ -65,7 +65,9 @@ struct Project {
               title: t.title,
               notes: t.notes,
               checklist: t.checklist,
-              onCollapse: () => { this.expandedId = ''; }
+              onCollapse: () => { this.expandedId = ''; },
+              onTitleCommit: (title: string) => { TodoCommands.updateTitle(t, title); },
+              onNotesCommit: (notes: string) => { TodoCommands.updateNotes(t, notes); }
             })
           } else {
             TodoRow({

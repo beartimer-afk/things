@@ -1,4 +1,4 @@
-import { router } from '@kit.ArkUI';
+
 import { Todo, TodoCommands, LifecycleStatus } from '../model/domain';
 import { appStore } from '../model/app';
 import { TodoRow } from '../components/TodoRow';
@@ -20,7 +20,7 @@ struct Inbox {
   build() {
     Column({ space: THINGS_SPACE_MD }) {
       Row({ space: THINGS_SPACE_SM }) {
-        Text('‹').fontSize(22).fontColor(THINGS_COLOR_TEXT_PRIMARY).onClick(() => router.back())
+        Text('‹').fontSize(22).fontColor(THINGS_COLOR_TEXT_PRIMARY).onClick(() => this.getUIContext().getRouter().back())
         Text('Inbox').fontSize(THINGS_FONT_TITLE).fontWeight(FontWeight.Bold).fontColor(THINGS_COLOR_TEXT_PRIMARY)
       }
       Text('已捕获 · 尚未归位（组织维度，非 StartMode）')

@@ -1,4 +1,4 @@
-import { router } from '@kit.ArkUI';
+
 import { Todo, TodoCommands, LifecycleStatus } from '../model/domain';
 import { appStore } from '../model/app';
 import { TodoRow } from '../components/TodoRow';
@@ -19,7 +19,7 @@ struct Someday {
   build() {
     Column({ space: THINGS_SPACE_MD }) {
       Row({ space: THINGS_SPACE_SM }) {
-        Text('‹').fontSize(22).fontColor(THINGS_COLOR_TEXT_PRIMARY).onClick(() => router.back())
+        Text('‹').fontSize(22).fontColor(THINGS_COLOR_TEXT_PRIMARY).onClick(() => this.getUIContext().getRouter().back())
         Text('Someday').fontSize(THINGS_FONT_TITLE).fontWeight(FontWeight.Bold).fontColor(THINGS_COLOR_TEXT_PRIMARY)
       }
       Text('明确休眠 · 暂不承诺（非 date==null）')

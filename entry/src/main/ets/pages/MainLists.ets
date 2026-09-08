@@ -1,4 +1,3 @@
-import { router } from '@kit.ArkUI';
 import { Todo, Project } from '../model/domain';
 import { appStore } from '../model/app';
 import { TodoRow } from '../components/TodoRow';
@@ -15,7 +14,7 @@ struct MainLists {
   @State results: Todo[] = [];
 
   go(url: string): void {
-    try { router.pushUrl({ url: url }); } catch (e) { /* non-fatal */ }
+    try { this.getUIContext().getRouter().pushUrl({ url: url }); } catch (e) { /* non-fatal */ }
   }
 
   updateSearch(q: string): void {

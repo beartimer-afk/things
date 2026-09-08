@@ -106,6 +106,12 @@ export class TodoCommands {
     // Only direct tags are edited here; inherited/effective tags are computed (never copied in).
     t.directTags = tags.slice();
   }
+  static updateTitle(t: Todo, title: string): void {
+    t.title = title;
+  }
+  static updateNotes(t: Todo, notes: string): void {
+    t.notes = notes;
+  }
   static toggleChecklist(t: Todo, itemId: string): void {
     for (let i = 0; i < t.checklist.length; i++) {
       if (t.checklist[i].id === itemId) {
