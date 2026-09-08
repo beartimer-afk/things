@@ -1,5 +1,6 @@
 import { router } from '@kit.ArkUI';
-import { Todo, TodoStore, TodoCommands, Start, StartMode, LifecycleStatus, ChecklistItem } from '../model/domain';
+import { Todo, TodoCommands, Start, StartMode, LifecycleStatus } from '../model/domain';
+import { appStore, todayStr, tomorrowStr } from '../model/app';
 import { TodoRow } from '../components/TodoRow';
 import { ExpandedTodo } from '../components/ExpandedTodo';
 import { WhenPicker } from '../components/WhenPicker';
@@ -7,31 +8,7 @@ import { DeadlinePicker } from '../components/DeadlinePicker';
 import { TagPicker } from '../components/TagPicker';
 import { THINGS_COLOR_BG_PRIMARY, THINGS_COLOR_TEXT_PRIMARY, THINGS_COLOR_TEXT_SECONDARY, THINGS_COLOR_ACCENT, THINGS_SPACE_MD, THINGS_SPACE_LG, THINGS_SPACE_SM, THINGS_FONT_TITLE, THINGS_FONT_BODY } from '../theme/tokens';
 
-function fmt(d: Date): string {
-  const m = ((d.getMonth() + 1) < 10 ? '0' : '') + String(d.getMonth() + 1);
-  const day = (d.getDate() < 10 ? '0' : '') + String(d.getDate());
-  return String(d.getFullYear()) + '-' + m + '-' + day;
-}
-function todayStr(): string { return fmt(new Date()); }
-function tomorrowStr(): string { const d = new Date(); d.setDate(d.getDate() + 1); return fmt(d); }
-
-const store = (() => {
-  const s = new TodoStore();
-  const today = todayStr();
-  const t1 = new Todo('t1', '买一本测试用的书', new Start(StartMode.ON_DATE, today));
-  t1.deadline = today;
-  t1.checklist = [
-    new ChecklistItem('c1', '挑出版社', false, 0),
-    new ChecklistItem('c2', '下单', false, 1)
-  ];
-  const t2 = new Todo('t2', '今晚健身半小时', new Start(StartMode.ON_DATE, today, true));
-  t2.isRepeatCopy = true;
-  t2.directTags = ['每日健身'];
-  const t3 = new Todo('t3', '完成 Things 复刻 H05', new Start(StartMode.ANYTIME));
-  t3.deadline = today;
-  s.setTodos([t1, t2, t3]);
-  return s;
-})();
+const store = appStore;
 
 function deadlineLabel(t: Todo): string {
   if (t.deadline === '') { return ''; }

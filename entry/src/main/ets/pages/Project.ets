@@ -1,5 +1,6 @@
 import { router } from '@kit.ArkUI';
-import { Todo, TodoStore, TodoCommands, Start, StartMode, LifecycleStatus } from '../model/domain';
+import { Todo, TodoCommands, LifecycleStatus } from '../model/domain';
+import { appStore } from '../model/app';
 import { TodoRow } from '../components/TodoRow';
 import { HeadingBlock } from '../components/HeadingBlock';
 import { ExpandedTodo } from '../components/ExpandedTodo';
@@ -21,23 +22,7 @@ const HEADINGS: HeadingMeta[] = [
   new HeadingMeta('h2', '交互')
 ];
 
-const store = (() => {
-  const s = new TodoStore();
-  const mk = (id: string, title: string, headingId: string): Todo => {
-    const t = new Todo(id, title, new Start(StartMode.ANYTIME));
-    t.headingId = headingId;
-    return t;
-  };
-  s.setTodos([
-    mk('a1', '搭建 HarmonyOS 工程', 'h1'),
-    mk('a2', '实现 TodoRow', 'h1'),
-    mk('b1', '实现 Checklist', 'h2'),
-    mk('b2', '实现 Overlay', 'h2'),
-    mk('l1', '写 README', ''),
-    mk('l2', '推送到远端', '')
-  ]);
-  return s;
-})();
+const store = appStore;
 
 // H07 organization page: a Project is a result container with Headings (structure)
 // and loose Todo children. Heading is a stable Project-scoped entity.
@@ -73,8 +58,8 @@ struct Project {
           .fontSize(THINGS_FONT_BODY)
           .fontColor(THINGS_COLOR_TEXT_SECONDARY)
 
-        // loose todos (no heading)
-        ForEach(store.getAll().filter((t: Todo) => t.headingId === ''), (t: Todo) => {
+        // loose todos (no heading, in this project)
+        ForEach(store.getAll().filter((t: Todo) => t.parentProjectId === 'p1' && t.headingId === ''), (t: Todo) => {
           if (this.expandedId === t.id) {
             ExpandedTodo({
               title: t.title,
@@ -99,7 +84,7 @@ struct Project {
         ForEach(HEADINGS, (h: HeadingMeta) => {
           HeadingBlock({
             title: h.title,
-            todos: store.getAll().filter((t: Todo) => t.headingId === h.id),
+            todos: store.getAll().filter((t: Todo) => t.parentProjectId === 'p1' && t.headingId === h.id),
             onToggleCompletion: (t: Todo, v: boolean) => this.toggleFromHeading(t, v),
             onOpen: (t: Todo) => { this.expandedId = t.id; }
           })

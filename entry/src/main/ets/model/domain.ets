@@ -169,4 +169,62 @@ export class TodoStore {
     }
     return out;
   }
+
+  upcoming(todayStr: string): Todo[] {
+    const out: Todo[] = [];
+    for (let i = 0; i < this.todos.length; i++) {
+      const t = this.todos[i];
+      if (t.lifecycle !== LifecycleStatus.OPEN) { continue; }
+      const inFuture = (t.start.mode === StartMode.ON_DATE && t.start.date !== '' && t.start.date > todayStr) ||
+        (t.deadline !== '' && t.deadline > todayStr);
+      if (inFuture) { out.push(t); }
+    }
+    return out;
+  }
+
+  anytime(): Todo[] {
+    const out: Todo[] = [];
+    for (let i = 0; i < this.todos.length; i++) {
+      const t = this.todos[i];
+      if (t.lifecycle === LifecycleStatus.OPEN && t.start.mode === StartMode.ANYTIME) { out.push(t); }
+    }
+    return out;
+  }
+
+  someday(): Todo[] {
+    const out: Todo[] = [];
+    for (let i = 0; i < this.todos.length; i++) {
+      const t = this.todos[i];
+      if (t.lifecycle === LifecycleStatus.OPEN && t.start.mode === StartMode.SOMEDAY) { out.push(t); }
+    }
+    return out;
+  }
+
+  // Inbox is an organizational dimension (captured, not yet placed), NOT a StartMode.
+  inbox(): Todo[] {
+    const out: Todo[] = [];
+    for (let i = 0; i < this.todos.length; i++) {
+      const t = this.todos[i];
+      if (t.lifecycle === LifecycleStatus.OPEN && t.parentProjectId === '' && t.parentAreaId === '') { out.push(t); }
+    }
+    return out;
+  }
+
+  logbook(): Todo[] {
+    const out: Todo[] = [];
+    for (let i = 0; i < this.todos.length; i++) {
+      const t = this.todos[i];
+      if (t.lifecycle !== LifecycleStatus.OPEN) { out.push(t); }
+    }
+    return out;
+  }
+
+  search(q: string): Todo[] {
+    const needle = q.toLowerCase();
+    const out: Todo[] = [];
+    for (let i = 0; i < this.todos.length; i++) {
+      if (this.todos[i].title.toLowerCase().indexOf(needle) >= 0) { out.push(this.todos[i]); }
+    }
+    return out;
+  }
 }

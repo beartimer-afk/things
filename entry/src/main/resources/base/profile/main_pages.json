@@ -3,6 +3,11 @@
     "pages/MainLists",
     "pages/Today",
     "pages/Project",
+    "pages/Inbox",
+    "pages/Upcoming",
+    "pages/Anytime",
+    "pages/Someday",
+    "pages/Logbook",
     "pages/DevVisualLab",
     "pages/Index"
   ]
