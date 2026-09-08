@@ -1,0 +1,16 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "things-hongmeng entry"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "Things 高保真复刻入口"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "Things"
+    }
+  ]
+}

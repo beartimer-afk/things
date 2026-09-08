@@ -1,0 +1,2 @@
+# Define project specific obfuscation rules here.
+# Keep Markdown / raw comment markers visible is out of scope for now.
