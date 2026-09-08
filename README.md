@@ -46,9 +46,16 @@ cd D:\Users\bear\DevEcoStudioProjects\things-hongmeng
 
 | 阶段 | 状态 |
 |---|---|
-| 工程骨架（可编译） | 进行中 |
-| H00–H02（Harness / Tokens / TodoCheckbox） | 待实现 |
-| H03–H04 | 未开始 |
-| 其余（H05–Pages） | 未开始 |
+| 工程骨架（可编译） | ✅ 完成 |
+| H00 Harness + H01 Tokens + H02 TodoCheckbox + H03 TodoRow + H04 Metadata | ✅ 完成（实现） |
+| 领域模型 + Projection（today/upcoming/anytime/someday/inbox/logbook/search） | ✅ 完成 |
+| H05 ExpandedTodo + 标题/备注编辑器 + H06 Checklist + H07 组织(Project/Area/Heading) | ✅ 完成（实现） |
+| H08 Overlay：When / Deadline / Tags 弹层 | ✅ 完成（实现） |
+| 交互：多选/批量、Magic Plus、QuickFind、选中行 | ✅ 完成（实现） |
+| 页面组合：MainLists/Today/Project/Area/Inbox/Upcoming/Anytime/Someday/Logbook | ✅ 完成（可导航） |
+| 拖拽重排、偏好持久化 | ⏳ 待做 |
+| 上模拟器 + Geometry/Inspector/Golden 验收 | ⏳ 依赖 DevEco 自动签名（用户侧） |
+
+> 状态如实区分 `实现完成` / `待做`。精确视觉值均为 `PROVISIONAL`（需真机 A 级证据 + 模拟器 Golden 校准，未冒充 VERIFIED）。
 
 > 说明：node/npm 若遇到 `npm.ps1` 执行策略问题，用 `npm.cmd`；GitHub 直连被墙，已走系统代理（v2rayN 127.0.0.1:10808）。
