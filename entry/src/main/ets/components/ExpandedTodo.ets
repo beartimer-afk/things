@@ -16,6 +16,7 @@ export struct ExpandedTodo {
   onToggleChecklist: (itemId: string) => void = (_: string) => {};
   onAddChecklist: (title: string) => void = (_: string) => {};
   onOpenWhen: () => void = () => {};
+  onOpenDeadline: () => void = () => {};
 
   build() {
     Column({ space: THINGS_SPACE_MD }) {
@@ -45,7 +46,10 @@ export struct ExpandedTodo {
           .onClick(() => this.onOpenWhen())
         Text('Tags').fontSize(THINGS_FONT_METADATA).fontColor(THINGS_COLOR_TEXT_SECONDARY)
         Text('Checklist').fontSize(THINGS_FONT_METADATA).fontColor(THINGS_COLOR_TEXT_SECONDARY)
-        Text('Deadline').fontSize(THINGS_FONT_METADATA).fontColor(THINGS_COLOR_TEXT_SECONDARY)
+        Text('Deadline')
+          .fontSize(THINGS_FONT_METADATA)
+          .fontColor(THINGS_COLOR_TEXT_SECONDARY)
+          .onClick(() => this.onOpenDeadline())
       }
       .width('100%')
       .alignItems(VerticalAlign.Center)

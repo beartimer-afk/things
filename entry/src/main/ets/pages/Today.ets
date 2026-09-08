@@ -3,14 +3,17 @@ import { Todo, TodoStore, TodoCommands, Start, StartMode, LifecycleStatus, Check
 import { TodoRow } from '../components/TodoRow';
 import { ExpandedTodo } from '../components/ExpandedTodo';
 import { WhenPicker } from '../components/WhenPicker';
-import { THINGS_COLOR_BG_PRIMARY, THINGS_COLOR_TEXT_PRIMARY, THINGS_COLOR_TEXT_SECONDARY, THINGS_SPACE_MD, THINGS_SPACE_LG, THINGS_SPACE_SM, THINGS_FONT_TITLE, THINGS_FONT_BODY } from '../theme/tokens';
+import { DeadlinePicker } from '../components/DeadlinePicker';
+import { THINGS_COLOR_BG_PRIMARY, THINGS_COLOR_TEXT_PRIMARY, THINGS_COLOR_TEXT_SECONDARY, THINGS_COLOR_ACCENT, THINGS_SPACE_MD, THINGS_SPACE_LG, THINGS_SPACE_SM, THINGS_FONT_TITLE, THINGS_FONT_BODY } from '../theme/tokens';
 
-function todayStr(): string {
-  const d = new Date();
+function fmt(d: Date): string {
   const m = ((d.getMonth() + 1) < 10 ? '0' : '') + String(d.getMonth() + 1);
   const day = (d.getDate() < 10 ? '0' : '') + String(d.getDate());
   return String(d.getFullYear()) + '-' + m + '-' + day;
 }
+
+function todayStr(): string { return fmt(new Date()); }
+function tomorrowStr(): string { const d = new Date(); d.setDate(d.getDate() + 1); return fmt(d); }
 
 const store = (() => {
   const s = new TodoStore();
@@ -41,14 +44,15 @@ function secondaryLabel(t: Todo): string {
 }
 
 // Today page: a Projection (working set), not a parent. Checkbox -> domain command;
-// row tap -> inline expand (ExpandedTodo). WhenPicker is a page-level Overlay (H08).
+// row tap -> inline expand (ExpandedTodo). When/Deadline pickers are page-level overlays (H08).
+// Magic Plus quick-captures a new Todo (Intent Compression) and expands it.
 @Entry
 @Component
 struct Today {
   @State items: Todo[] = [];
   @State expandedId: string = '';
-  @State showWhen: boolean = false;
-  @State whenTodoId: string = '';
+  @State activeOverlay: string = '';           // '' | 'when' | 'deadline'
+  @State activeOverlayTargetId: string = '';
   @State version: number = 0;
 
   aboutToAppear(): void {
@@ -83,9 +87,23 @@ struct Today {
   }
 
   applyWhen(s: Start): void {
-    const t = this.findTodo(this.whenTodoId);
+    const t = this.findTodo(this.activeOverlayTargetId);
     if (t !== undefined) { TodoCommands.setStart(t, s); }
-    this.showWhen = false;
+    this.activeOverlay = '';
+    this.refresh();
+  }
+
+  applyDeadline(date: string): void {
+    const t = this.findTodo(this.activeOverlayTargetId);
+    if (t !== undefined) { TodoCommands.setDeadline(t, date); }
+    this.activeOverlay = '';
+    this.refresh();
+  }
+
+  quickAdd(): void {
+    const t = new Todo('t' + Date.now().toString(), '新任务', new Start(StartMode.ANYTIME));
+    store.addTodo(t);
+    this.expandedId = t.id;
     this.refresh();
   }
 
@@ -117,7 +135,8 @@ struct Today {
                   onCollapse: () => { this.expandedId = ''; },
                   onToggleChecklist: (itemId: string) => this.toggleChecklist(t, itemId),
                   onAddChecklist: (title: string) => this.addChecklist(t, title),
-                  onOpenWhen: () => { this.whenTodoId = t.id; this.showWhen = true; }
+                  onOpenWhen: () => { this.activeOverlayTargetId = t.id; this.activeOverlay = 'when'; },
+                  onOpenDeadline: () => { this.activeOverlayTargetId = t.id; this.activeOverlay = 'deadline'; }
                 })
               } else {
                 TodoRow({
@@ -135,6 +154,16 @@ struct Today {
         }
         .width('100%')
         .layoutWeight(1)
+
+        // Magic Plus (quick capture). First-class new-todo entry; emits a create intent.
+        Row() {
+          Text('＋ 新建任务')
+            .fontSize(THINGS_FONT_BODY)
+            .fontColor(THINGS_COLOR_ACCENT)
+            .onClick(() => this.quickAdd())
+        }
+        .width('100%')
+        .padding({ top: 8, bottom: 8 })
       }
       .width('100%')
       .height('100%')
@@ -142,20 +171,34 @@ struct Today {
       .backgroundColor(THINGS_COLOR_BG_PRIMARY)
       .alignItems(HorizontalAlign.Start)
 
-      // H08 page-level overlay: scrim + bottom sheet
-      if (this.showWhen) {
+      if (this.activeOverlay === 'when') {
         Column() {
           Blank()
           WhenPicker({
             todayStr: todayStr(),
             onSelect: (s: Start) => this.applyWhen(s),
-            onDismiss: () => { this.showWhen = false; }
+            onDismiss: () => { this.activeOverlay = ''; }
           })
         }
         .width('100%')
         .height('100%')
         .backgroundColor('#55000000')
-        .onClick(() => { this.showWhen = false; })
+        .onClick(() => { this.activeOverlay = ''; })
+      } else if (this.activeOverlay === 'deadline') {
+        Column() {
+          Blank()
+          DeadlinePicker({
+            todayStr: todayStr(),
+            tomorrowStr: tomorrowStr(),
+            onSelect: (d: string) => this.applyDeadline(d),
+            onClear: () => this.applyDeadline(''),
+            onDismiss: () => { this.activeOverlay = ''; }
+          })
+        }
+        .width('100%')
+        .height('100%')
+        .backgroundColor('#55000000')
+        .onClick(() => { this.activeOverlay = ''; })
       }
     }
     .width('100%')
