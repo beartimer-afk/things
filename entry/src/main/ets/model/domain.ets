@@ -102,6 +102,10 @@ export class TodoCommands {
     // Deadline is orthogonal to Start.
     t.deadline = deadline;
   }
+  static setTags(t: Todo, tags: string[]): void {
+    // Only direct tags are edited here; inherited/effective tags are computed (never copied in).
+    t.directTags = tags.slice();
+  }
   static toggleChecklist(t: Todo, itemId: string): void {
     for (let i = 0; i < t.checklist.length; i++) {
       if (t.checklist[i].id === itemId) {
@@ -126,6 +130,13 @@ export class TodoStore {
   }
   addTodo(t: Todo): void {
     this.todos.push(t);
+  }
+  remove(id: string): void {
+    const out: Todo[] = [];
+    for (let i = 0; i < this.todos.length; i++) {
+      if (this.todos[i].id !== id) { out.push(this.todos[i]); }
+    }
+    this.todos = out;
   }
   getAll(): Todo[] {
     return this.todos;

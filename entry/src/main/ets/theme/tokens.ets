@@ -9,6 +9,7 @@ export const THINGS_COLOR_TEXT_SECONDARY: string = '#8A8A8E';
 export const THINGS_COLOR_ACCENT: string = '#0055B8';          // checkbox completed blue (seed)
 export const THINGS_COLOR_CHECKBOX_STROKE: string = '#B7BBBF'; // open checkbox border (seed)
 export const THINGS_COLOR_DEADLINE: string = '#F6164A';        // deadline accent (seed)
+export const THINGS_COLOR_SELECTED_BG: string = '#E8F0FE';     // multi-select row bg (light blue) PROVISIONAL
 
 // Spacing (vp)
 export const THINGS_SPACE_XS: number = 4;

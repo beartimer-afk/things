@@ -1,31 +1,38 @@
 import { TodoCheckbox } from './TodoCheckbox';
-import { THINGS_COLOR_TEXT_PRIMARY, THINGS_COLOR_TEXT_SECONDARY, THINGS_COLOR_DEADLINE, THINGS_COLOR_ACCENT, THINGS_SPACE_SM, THINGS_SPACE_XS, THINGS_FONT_BODY, THINGS_FONT_METADATA } from '../theme/tokens';
+import { THINGS_COLOR_TEXT_PRIMARY, THINGS_COLOR_TEXT_SECONDARY, THINGS_COLOR_DEADLINE, THINGS_COLOR_ACCENT, THINGS_COLOR_CHECKBOX_STROKE, THINGS_COLOR_SELECTED_BG, THINGS_HIT_TARGET, THINGS_SPACE_SM, THINGS_SPACE_XS, THINGS_FONT_BODY, THINGS_FONT_METADATA } from '../theme/tokens';
 
-// H03 TodoRow + H04 metadata slots.
-// Layout per spec:
-//   CheckboxSlot [H02] | ContentColumn(TitleLine + SecondaryLine) | Trailing
-//   TitleLine = Title + InlineSuffix (repeat indicator)     [H04]
-//   SecondaryLine = parent/reminder (weak)                  [H04-B3]
-//   Trailing = deadline (high priority, must not be squeezed) [H04-B1]
-// Visual: no Card / no Divider / no Shadow; whitespace + rhythm carry the hierarchy.
-// Event isolation: Checkbox click => onToggleCompletion (NOT onOpen);
-// Row tap => onOpen (inline expand, NOT a detail route).
+// H03 TodoRow + H04 metadata slots + multi-select presentation (H05.3).
+//   CheckboxSlot | ContentColumn(TitleLine + SecondaryLine) | Trailing
+// In selection mode the checkbox is replaced by a right-side selection control and a
+// light-blue selected background; tapping toggles selection (NOT expand).
+// Event isolation: checkbox click => onToggleCompletion (NOT onOpen);
+// row tap => onOpen (inline expand) normally, onToggleSelect in selection mode.
 @Component
 export struct TodoRow {
   @Prop title: string = '';
   @Prop checked: boolean = false;
-  @Prop repeat: boolean = false;      // InlineSuffix (H04-B2; custom vector later)
-  @Prop secondary: string = '';       // SecondaryLine (H04-B3)
-  @Prop deadline: string = '';        // Trailing (H04-B1)
+  @Prop repeat: boolean = false;
+  @Prop secondary: string = '';
+  @Prop deadline: string = '';
+  @Prop selectionMode: boolean = false;
+  @Prop selected: boolean = false;
   onToggleCompletion: (completed: boolean) => void = (_: boolean) => {};
   onOpen: () => void = () => {};
+  onToggleSelect: () => void = () => {};
 
   build() {
     Row({ space: THINGS_SPACE_XS }) {
-      TodoCheckbox({
-        checked: this.checked,
-        onToggleCompletion: (v: boolean) => this.onToggleCompletion(v)
-      })
+      if (this.selectionMode) {
+        // keep left anchor stable while in selection mode
+        Column()
+          .width(THINGS_HIT_TARGET)
+          .height(THINGS_HIT_TARGET)
+      } else {
+        TodoCheckbox({
+          checked: this.checked,
+          onToggleCompletion: (v: boolean) => this.onToggleCompletion(v)
+        })
+      }
 
       Column({ space: THINGS_SPACE_XS }) {
         Row({ space: 6 }) {
@@ -33,7 +40,6 @@ export struct TodoRow {
             .fontSize(THINGS_FONT_BODY)
             .fontColor(this.checked ? THINGS_COLOR_TEXT_SECONDARY : THINGS_COLOR_TEXT_PRIMARY)
           if (this.repeat) {
-            // repeat indicator placeholder; replace with custom repeat vector (H04-B2)
             Text('repeat')
               .fontSize(THINGS_FONT_METADATA)
               .fontColor(THINGS_COLOR_ACCENT)
@@ -50,7 +56,15 @@ export struct TodoRow {
       .layoutWeight(1)
       .alignItems(HorizontalAlign.Start)
 
-      if (this.deadline !== '') {
+      if (this.selectionMode) {
+        Row()
+          .width(22)
+          .height(22)
+          .borderRadius(11)
+          .border({ width: 1.5, color: this.selected ? THINGS_COLOR_ACCENT : THINGS_COLOR_CHECKBOX_STROKE })
+          .backgroundColor(this.selected ? THINGS_COLOR_ACCENT : Color.Transparent)
+          .margin({ left: 8 })
+      } else if (this.deadline !== '') {
         Text(this.deadline)
           .fontSize(THINGS_FONT_METADATA)
           .fontColor(THINGS_COLOR_DEADLINE)
@@ -58,7 +72,14 @@ export struct TodoRow {
     }
     .width('100%')
     .padding({ left: THINGS_SPACE_SM, right: THINGS_SPACE_SM, top: 10, bottom: 10 })
+    .backgroundColor(this.selectionMode && this.selected ? THINGS_COLOR_SELECTED_BG : Color.Transparent)
     .alignItems(VerticalAlign.Center)
-    .onClick(() => this.onOpen())
+    .onClick(() => {
+      if (this.selectionMode) {
+        this.onToggleSelect();
+      } else {
+        this.onOpen();
+      }
+    })
   }
 }
