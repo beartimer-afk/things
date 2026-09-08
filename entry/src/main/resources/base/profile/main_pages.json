@@ -1,8 +1,9 @@
 {
   "src": [
-    "pages/Index",
-    "pages/DevVisualLab",
+    "pages/MainLists",
     "pages/Today",
-    "pages/Project"
+    "pages/Project",
+    "pages/DevVisualLab",
+    "pages/Index"
   ]
 }

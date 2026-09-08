@@ -1,8 +1,9 @@
+import { router } from '@kit.ArkUI';
 import { Todo, TodoStore, TodoCommands, Start, StartMode, LifecycleStatus } from '../model/domain';
 import { TodoRow } from '../components/TodoRow';
 import { HeadingBlock } from '../components/HeadingBlock';
 import { ExpandedTodo } from '../components/ExpandedTodo';
-import { THINGS_COLOR_BG_PRIMARY, THINGS_COLOR_TEXT_PRIMARY, THINGS_COLOR_TEXT_SECONDARY, THINGS_SPACE_MD, THINGS_SPACE_LG, THINGS_FONT_TITLE, THINGS_FONT_BODY } from '../theme/tokens';
+import { THINGS_COLOR_BG_PRIMARY, THINGS_COLOR_TEXT_PRIMARY, THINGS_COLOR_TEXT_SECONDARY, THINGS_SPACE_MD, THINGS_SPACE_LG, THINGS_SPACE_SM, THINGS_FONT_TITLE, THINGS_FONT_BODY } from '../theme/tokens';
 
 const PROJECT_TITLE = '高保真复刻';
 
@@ -58,10 +59,16 @@ struct Project {
   build() {
     Scroll() {
       Column({ space: THINGS_SPACE_MD }) {
-        Text(PROJECT_TITLE)
-          .fontSize(THINGS_FONT_TITLE)
-          .fontWeight(FontWeight.Bold)
-          .fontColor(THINGS_COLOR_TEXT_PRIMARY)
+        Row({ space: THINGS_SPACE_SM }) {
+          Text('‹')
+            .fontSize(22)
+            .fontColor(THINGS_COLOR_TEXT_PRIMARY)
+            .onClick(() => router.back())
+          Text(PROJECT_TITLE)
+            .fontSize(THINGS_FONT_TITLE)
+            .fontWeight(FontWeight.Bold)
+            .fontColor(THINGS_COLOR_TEXT_PRIMARY)
+        }
         Text('Project 页面 · 组织结构（Heading + loose Todo）')
           .fontSize(THINGS_FONT_BODY)
           .fontColor(THINGS_COLOR_TEXT_SECONDARY)

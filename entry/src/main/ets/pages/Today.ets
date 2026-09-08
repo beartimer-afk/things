@@ -1,7 +1,8 @@
+import { router } from '@kit.ArkUI';
 import { Todo, TodoStore, TodoCommands, Start, StartMode, LifecycleStatus, ChecklistItem } from '../model/domain';
 import { TodoRow } from '../components/TodoRow';
 import { ExpandedTodo } from '../components/ExpandedTodo';
-import { THINGS_COLOR_BG_PRIMARY, THINGS_COLOR_TEXT_PRIMARY, THINGS_COLOR_TEXT_SECONDARY, THINGS_SPACE_MD, THINGS_SPACE_LG, THINGS_FONT_TITLE, THINGS_FONT_BODY } from '../theme/tokens';
+import { THINGS_COLOR_BG_PRIMARY, THINGS_COLOR_TEXT_PRIMARY, THINGS_COLOR_TEXT_SECONDARY, THINGS_SPACE_MD, THINGS_SPACE_LG, THINGS_SPACE_SM, THINGS_FONT_TITLE, THINGS_FONT_BODY } from '../theme/tokens';
 
 function todayStr(): string {
   const d = new Date();
@@ -68,10 +69,16 @@ struct Today {
 
   build() {
     Column({ space: THINGS_SPACE_MD }) {
-      Text('Today')
-        .fontSize(THINGS_FONT_TITLE)
-        .fontWeight(FontWeight.Bold)
-        .fontColor(THINGS_COLOR_TEXT_PRIMARY)
+      Row({ space: THINGS_SPACE_SM }) {
+        Text('‹')
+          .fontSize(22)
+          .fontColor(THINGS_COLOR_TEXT_PRIMARY)
+          .onClick(() => router.back())
+        Text('Today')
+          .fontSize(THINGS_FONT_TITLE)
+          .fontWeight(FontWeight.Bold)
+          .fontColor(THINGS_COLOR_TEXT_PRIMARY)
+      }
       Text('注意力工作集 · Projection（非 Parent）')
         .fontSize(THINGS_FONT_BODY)
         .fontColor(THINGS_COLOR_TEXT_SECONDARY)
