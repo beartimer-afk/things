@@ -74,6 +74,7 @@ export struct TodoRow {
     .padding({ left: THINGS_SPACE_SM, right: THINGS_SPACE_SM, top: 10, bottom: 10 })
     .backgroundColor(this.selectionMode && this.selected ? THINGS_COLOR_SELECTED_BG : Color.Transparent)
     .alignItems(VerticalAlign.Center)
+    .id('todo_row.root')
     .onClick(() => {
       if (this.selectionMode) {
         this.onToggleSelect();

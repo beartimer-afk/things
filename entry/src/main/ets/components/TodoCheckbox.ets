@@ -48,6 +48,7 @@ export struct TodoCheckbox {
     .justifyContent(FlexAlign.Center)
     .alignItems(HorizontalAlign.Center)
     .backgroundColor(this.pressed ? '#1A000000' : Color.Transparent)
+    .id('todo_checkbox.root')
     .onTouch((e: TouchEvent) => {
       if (e.type === TouchType.Down) {
         this.pressed = true;
