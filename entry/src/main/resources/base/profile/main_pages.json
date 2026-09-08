@@ -3,6 +3,7 @@
     "pages/MainLists",
     "pages/Today",
     "pages/Project",
+    "pages/Area",
     "pages/Inbox",
     "pages/Upcoming",
     "pages/Anytime",

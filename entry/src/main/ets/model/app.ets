@@ -16,6 +16,7 @@ export const appStore = (() => {
   const today = todayStr();
   s.setAreas([new Area('ar1', '生活')]);
   s.setProjects([new Project('p1', '高保真复刻')]);
+  s.getProjects()[0].parentAreaId = 'ar1';
 
   const mk = (id: string, title: string, start: Start): Todo => new Todo(id, title, start);
 

@@ -1,7 +1,7 @@
-import { Todo, Project } from '../model/domain';
+import { Todo, Project, Area } from '../model/domain';
 import { appStore } from '../model/app';
 import { TodoRow } from '../components/TodoRow';
-import { ProjectRow } from '../components/ProjectRow';
+import { AreaRow } from '../components/AreaRow';
 import { THINGS_COLOR_BG_PRIMARY, THINGS_COLOR_TEXT_PRIMARY, THINGS_COLOR_TEXT_SECONDARY, THINGS_COLOR_ACCENT, THINGS_SPACE_MD, THINGS_SPACE_LG, THINGS_SPACE_SM, THINGS_FONT_TITLE, THINGS_FONT_BODY } from '../theme/tokens';
 
 // Main Lists = global entry / organization overview (NOT a "all tasks" database page).
@@ -12,6 +12,7 @@ struct MainLists {
   @State quickFind: boolean = false;
   @State query: string = '';
   @State results: Todo[] = [];
+  @State areaExpanded: boolean = true;
 
   go(url: string): void {
     try { this.getUIContext().getRouter().pushUrl({ url: url }); } catch (e) { /* non-fatal */ }
@@ -56,15 +57,16 @@ struct MainLists {
         this.navRow('Someday', 'pages/Someday')
         this.navRow('Logbook', 'pages/Logbook')
 
-        // Projects (organization structure)
-        ForEach(appStore.getProjects(), (p: Project) => {
-          Column() {
-            ProjectRow({
-              title: p.title,
-              onOpen: () => this.go('pages/Project')
-            })
-          }
-        }, (p: Project) => p.id)
+        // Areas (long-term responsibility; collapsible, children projects)
+        ForEach(appStore.getAreas(), (ar: Area) => {
+          AreaRow({
+            title: ar.title,
+            expanded: this.areaExpanded,
+            children: appStore.getProjects().filter((p: Project) => p.parentAreaId === ar.id),
+            onToggle: () => { this.areaExpanded = !this.areaExpanded; },
+            onOpen: () => this.go('pages/Area')
+          })
+        }, (ar: Area) => ar.id)
       }
       .width('100%')
       .height('100%')
