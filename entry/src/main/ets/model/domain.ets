@@ -123,6 +123,17 @@ export class TodoCommands {
     const id = 'c' + (t.checklist.length + 1) + '-' + Date.now().toString();
     t.checklist.push(new ChecklistItem(id, title, false, t.checklist.length));
   }
+  static reorderChecklist(t: Todo, itemId: string, step: number): void {
+    let idx = -1;
+    for (let i = 0; i < t.checklist.length; i++) { if (t.checklist[i].id === itemId) { idx = i; } }
+    if (idx < 0) { return; }
+    const to = idx + step;
+    if (to < 0 || to >= t.checklist.length) { return; }
+    const tmp = t.checklist[idx];
+    t.checklist[idx] = t.checklist[to];
+    t.checklist[to] = tmp;
+    for (let i = 0; i < t.checklist.length; i++) { t.checklist[i].rank = i; }
+  }
 }
 
 // In-memory fact store (single source of truth). Persistence/sync is E-level and later.

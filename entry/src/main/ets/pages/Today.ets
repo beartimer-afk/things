@@ -155,6 +155,7 @@ struct Today {
                   onCollapse: () => { this.expandedId = ''; },
                   onToggleChecklist: (itemId: string) => this.toggleChecklist(t, itemId),
                   onAddChecklist: (title: string) => this.addChecklist(t, title),
+                  onMoveChecklist: (itemId: string, step: number) => { TodoCommands.reorderChecklist(t, itemId, step); this.version = this.version + 1; },
                   onOpenWhen: () => { this.activeOverlayTargetId = t.id; this.activeOverlay = 'when'; },
                   onOpenDeadline: () => { this.activeOverlayTargetId = t.id; this.activeOverlay = 'deadline'; },
                   onOpenTags: () => { this.activeOverlayTargetId = t.id; this.activeOverlay = 'tags'; },

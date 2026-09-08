@@ -16,6 +16,7 @@ export struct ExpandedTodo {
   onCollapse: () => void = () => {};
   onToggleChecklist: (itemId: string) => void = (_: string) => {};
   onAddChecklist: (title: string) => void = (_: string) => {};
+  onMoveChecklist: (itemId: string, step: number) => void = (_i: string, _s: number) => {};
   onOpenWhen: () => void = () => {};
   onOpenDeadline: () => void = () => {};
   onOpenTags: () => void = () => {};
@@ -47,7 +48,8 @@ export struct ExpandedTodo {
       ChecklistContainer({
         items: this.checklist,
         onToggle: (itemId: string) => this.onToggleChecklist(itemId),
-        onAdd: (title: string) => this.onAddChecklist(title)
+        onAdd: (title: string) => this.onAddChecklist(title),
+        onMove: (itemId: string, step: number) => this.onMoveChecklist(itemId, step)
       })
 
       Row({ space: THINGS_SPACE_MD }) {

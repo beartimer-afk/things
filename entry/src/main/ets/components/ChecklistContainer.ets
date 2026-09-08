@@ -14,6 +14,7 @@ export struct ChecklistContainer {
   @State newTitle: string = '';
   onToggle: (itemId: string) => void = (_: string) => {};
   onAdd: (title: string) => void = (_: string) => {};
+  onMove: (itemId: string, step: number) => void = (_i: string, _s: number) => {};
 
   aboutToAppear(): void {
     this.internalItems = this.items.slice();
@@ -36,6 +37,19 @@ export struct ChecklistContainer {
     this.newTitle = '';
   }
 
+  moveLocal(itemId: string, step: number): void {
+    let idx = -1;
+    for (let i = 0; i < this.internalItems.length; i++) { if (this.internalItems[i].id === itemId) { idx = i; } }
+    const to = idx + step;
+    if (idx < 0 || to < 0 || to >= this.internalItems.length) { return; }
+    const copy = this.internalItems.slice();
+    const tmp = copy[idx];
+    copy[idx] = copy[to];
+    copy[to] = tmp;
+    this.internalItems = copy;
+    this.onMove(itemId, step);
+  }
+
   build() {
     Column({ space: THINGS_SPACE_SM }) {
       ForEach(this.internalItems, (item: ChecklistItem) => {
@@ -55,6 +69,11 @@ export struct ChecklistContainer {
           Text('≡')
             .fontSize(THINGS_FONT_METADATA)
             .fontColor(THINGS_COLOR_TEXT_SECONDARY)
+          // Todo-scoped reorder (rank); demonstrate reorder-only-within-this-todo
+          Column() {
+            Text('▲').fontSize(10).fontColor(THINGS_COLOR_TEXT_SECONDARY).onClick(() => this.moveLocal(item.id, -1))
+            Text('▼').fontSize(10).fontColor(THINGS_COLOR_TEXT_SECONDARY).onClick(() => this.moveLocal(item.id, 1))
+          }
         }
         .width('100%')
         .alignItems(VerticalAlign.Center)
