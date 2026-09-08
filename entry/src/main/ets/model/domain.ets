@@ -83,34 +83,44 @@ export class Area {
 }
 
 // Commands (scaffold subset). UI never mutates entities directly.
+// A persistence hook (onMutate) is set by the host so any domain mutation can be saved.
 export class TodoCommands {
+  static onMutate: () => void = () => {};
+
   static complete(t: Todo): void {
     if (t.lifecycle === LifecycleStatus.OPEN) {
       t.lifecycle = LifecycleStatus.COMPLETED;
     }
+    TodoCommands.onMutate();
   }
   static uncomplete(t: Todo): void {
     if (t.lifecycle === LifecycleStatus.COMPLETED) {
       t.lifecycle = LifecycleStatus.OPEN;
     }
+    TodoCommands.onMutate();
   }
   static setStart(t: Todo, start: Start): void {
     // Start is a separate dimension; does not touch deadline/lifecycle.
     t.start = start;
+    TodoCommands.onMutate();
   }
   static setDeadline(t: Todo, deadline: string): void {
     // Deadline is orthogonal to Start.
     t.deadline = deadline;
+    TodoCommands.onMutate();
   }
   static setTags(t: Todo, tags: string[]): void {
     // Only direct tags are edited here; inherited/effective tags are computed (never copied in).
     t.directTags = tags.slice();
+    TodoCommands.onMutate();
   }
   static updateTitle(t: Todo, title: string): void {
     t.title = title;
+    TodoCommands.onMutate();
   }
   static updateNotes(t: Todo, notes: string): void {
     t.notes = notes;
+    TodoCommands.onMutate();
   }
   static toggleChecklist(t: Todo, itemId: string): void {
     for (let i = 0; i < t.checklist.length; i++) {
@@ -118,10 +128,12 @@ export class TodoCommands {
         t.checklist[i].completed = !t.checklist[i].completed;
       }
     }
+    TodoCommands.onMutate();
   }
   static addChecklistItem(t: Todo, title: string): void {
     const id = 'c' + (t.checklist.length + 1) + '-' + Date.now().toString();
     t.checklist.push(new ChecklistItem(id, title, false, t.checklist.length));
+    TodoCommands.onMutate();
   }
   static reorderChecklist(t: Todo, itemId: string, step: number): void {
     let idx = -1;
@@ -133,6 +145,7 @@ export class TodoCommands {
     t.checklist[idx] = t.checklist[to];
     t.checklist[to] = tmp;
     for (let i = 0; i < t.checklist.length; i++) { t.checklist[i].rank = i; }
+    TodoCommands.onMutate();
   }
 }
 
