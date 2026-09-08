@@ -2,6 +2,7 @@ import { router } from '@kit.ArkUI';
 import { Todo, TodoStore, TodoCommands, Start, StartMode, LifecycleStatus, ChecklistItem } from '../model/domain';
 import { TodoRow } from '../components/TodoRow';
 import { ExpandedTodo } from '../components/ExpandedTodo';
+import { WhenPicker } from '../components/WhenPicker';
 import { THINGS_COLOR_BG_PRIMARY, THINGS_COLOR_TEXT_PRIMARY, THINGS_COLOR_TEXT_SECONDARY, THINGS_SPACE_MD, THINGS_SPACE_LG, THINGS_SPACE_SM, THINGS_FONT_TITLE, THINGS_FONT_BODY } from '../theme/tokens';
 
 function todayStr(): string {
@@ -11,7 +12,6 @@ function todayStr(): string {
   return String(d.getFullYear()) + '-' + m + '-' + day;
 }
 
-// In-memory fact store seeded once (real persistence is a later concern).
 const store = (() => {
   const s = new TodoStore();
   const today = todayStr();
@@ -41,12 +41,14 @@ function secondaryLabel(t: Todo): string {
 }
 
 // Today page: a Projection (working set), not a parent. Checkbox -> domain command;
-// row tap -> inline expand (ExpandedTodo), NOT a detail route.
+// row tap -> inline expand (ExpandedTodo). WhenPicker is a page-level Overlay (H08).
 @Entry
 @Component
 struct Today {
   @State items: Todo[] = [];
   @State expandedId: string = '';
+  @State showWhen: boolean = false;
+  @State whenTodoId: string = '';
   @State version: number = 0;
 
   aboutToAppear(): void {
@@ -55,6 +57,14 @@ struct Today {
 
   refresh(): void {
     this.items = store.today(todayStr());
+  }
+
+  findTodo(id: string): Todo | undefined {
+    const all = store.getAll();
+    for (let i = 0; i < all.length; i++) {
+      if (all[i].id === id) { return all[i]; }
+    }
+    return undefined;
   }
 
   toggle(t: Todo, completed: boolean): void {
@@ -67,54 +77,88 @@ struct Today {
     this.version = this.version + 1;
   }
 
-  build() {
-    Column({ space: THINGS_SPACE_MD }) {
-      Row({ space: THINGS_SPACE_SM }) {
-        Text('‹')
-          .fontSize(22)
-          .fontColor(THINGS_COLOR_TEXT_PRIMARY)
-          .onClick(() => router.back())
-        Text('Today')
-          .fontSize(THINGS_FONT_TITLE)
-          .fontWeight(FontWeight.Bold)
-          .fontColor(THINGS_COLOR_TEXT_PRIMARY)
-      }
-      Text('注意力工作集 · Projection（非 Parent）')
-        .fontSize(THINGS_FONT_BODY)
-        .fontColor(THINGS_COLOR_TEXT_SECONDARY)
+  addChecklist(t: Todo, title: string): void {
+    TodoCommands.addChecklistItem(t, title);
+    this.version = this.version + 1;
+  }
 
-      List({ space: 0 }) {
-        ForEach(this.items, (t: Todo) => {
-          ListItem() {
-            if (this.expandedId === t.id) {
-              ExpandedTodo({
-                title: t.title,
-                notes: t.notes,
-                checklist: t.checklist,
-                onCollapse: () => { this.expandedId = ''; },
-                onToggleChecklist: (itemId: string) => this.toggleChecklist(t, itemId)
-              })
-            } else {
-              TodoRow({
-                title: t.title,
-                checked: t.lifecycle === LifecycleStatus.COMPLETED,
-                repeat: t.isRepeatCopy,
-                secondary: secondaryLabel(t),
-                deadline: deadlineLabel(t),
-                onToggleCompletion: (v: boolean) => this.toggle(t, v),
-                onOpen: () => { this.expandedId = t.id; }
-              })
+  applyWhen(s: Start): void {
+    const t = this.findTodo(this.whenTodoId);
+    if (t !== undefined) { TodoCommands.setStart(t, s); }
+    this.showWhen = false;
+    this.refresh();
+  }
+
+  build() {
+    Stack() {
+      Column({ space: THINGS_SPACE_MD }) {
+        Row({ space: THINGS_SPACE_SM }) {
+          Text('‹')
+            .fontSize(22)
+            .fontColor(THINGS_COLOR_TEXT_PRIMARY)
+            .onClick(() => router.back())
+          Text('Today')
+            .fontSize(THINGS_FONT_TITLE)
+            .fontWeight(FontWeight.Bold)
+            .fontColor(THINGS_COLOR_TEXT_PRIMARY)
+        }
+        Text('注意力工作集 · Projection（非 Parent）')
+          .fontSize(THINGS_FONT_BODY)
+          .fontColor(THINGS_COLOR_TEXT_SECONDARY)
+
+        List({ space: 0 }) {
+          ForEach(this.items, (t: Todo) => {
+            ListItem() {
+              if (this.expandedId === t.id) {
+                ExpandedTodo({
+                  title: t.title,
+                  notes: t.notes,
+                  checklist: t.checklist,
+                  onCollapse: () => { this.expandedId = ''; },
+                  onToggleChecklist: (itemId: string) => this.toggleChecklist(t, itemId),
+                  onAddChecklist: (title: string) => this.addChecklist(t, title),
+                  onOpenWhen: () => { this.whenTodoId = t.id; this.showWhen = true; }
+                })
+              } else {
+                TodoRow({
+                  title: t.title,
+                  checked: t.lifecycle === LifecycleStatus.COMPLETED,
+                  repeat: t.isRepeatCopy,
+                  secondary: secondaryLabel(t),
+                  deadline: deadlineLabel(t),
+                  onToggleCompletion: (v: boolean) => this.toggle(t, v),
+                  onOpen: () => { this.expandedId = t.id; }
+                })
+              }
             }
-          }
-        }, (t: Todo) => t.id)
+          }, (t: Todo) => t.id)
+        }
+        .width('100%')
+        .layoutWeight(1)
       }
       .width('100%')
-      .layoutWeight(1)
+      .height('100%')
+      .padding(THINGS_SPACE_LG)
+      .backgroundColor(THINGS_COLOR_BG_PRIMARY)
+      .alignItems(HorizontalAlign.Start)
+
+      // H08 page-level overlay: scrim + bottom sheet
+      if (this.showWhen) {
+        Column() {
+          Blank()
+          WhenPicker({
+            todayStr: todayStr(),
+            onSelect: (s: Start) => this.applyWhen(s),
+            onDismiss: () => { this.showWhen = false; }
+          })
+        }
+        .width('100%')
+        .height('100%')
+        .backgroundColor('#55000000')
+        .onClick(() => { this.showWhen = false; })
+      }
     }
     .width('100%')
     .height('100%')
-    .padding(THINGS_SPACE_LG)
-    .backgroundColor(THINGS_COLOR_BG_PRIMARY)
-    .alignItems(HorizontalAlign.Start)
   }
 }

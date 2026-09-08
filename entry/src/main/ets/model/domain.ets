@@ -109,6 +109,10 @@ export class TodoCommands {
       }
     }
   }
+  static addChecklistItem(t: Todo, title: string): void {
+    const id = 'c' + (t.checklist.length + 1) + '-' + Date.now().toString();
+    t.checklist.push(new ChecklistItem(id, title, false, t.checklist.length));
+  }
 }
 
 // In-memory fact store (single source of truth). Persistence/sync is E-level and later.

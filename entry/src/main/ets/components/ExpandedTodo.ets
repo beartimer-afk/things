@@ -1,10 +1,11 @@
 import { ChecklistItem } from '../model/domain';
-import { THINGS_COLOR_BG_PRIMARY, THINGS_COLOR_TEXT_PRIMARY, THINGS_COLOR_TEXT_SECONDARY, THINGS_COLOR_ACCENT, THINGS_COLOR_CHECKBOX_STROKE, THINGS_RADIUS_MD, THINGS_SPACE_MD, THINGS_SPACE_SM, THINGS_FONT_BODY, THINGS_FONT_METADATA } from '../theme/tokens';
+import { ChecklistContainer } from './ChecklistContainer';
+import { THINGS_COLOR_BG_PRIMARY, THINGS_COLOR_TEXT_PRIMARY, THINGS_COLOR_TEXT_SECONDARY, THINGS_RADIUS_MD, THINGS_SPACE_MD, THINGS_SPACE_SM, THINGS_FONT_BODY, THINGS_FONT_METADATA } from '../theme/tokens';
 
 // H05 ExpandedTodo — the SAME Todo object expanded in place (NOT a detail route).
-// Slots: Title / Notes / Checklist / (ActionBar later H05-D).
+// Slots: Title / Notes / Checklist / ActionBar(H05-D).
 // Presentation state (expanded) belongs to UI, not to the Domain Todo.
-// This is a scaffold container; H05-B/C editors + H05-D action bar are refined later.
+// Action bar only emits presentation intents (OpenWhenPicker etc.), per H05-D.
 @Component
 export struct ExpandedTodo {
   @Prop title: string = '';
@@ -13,43 +14,42 @@ export struct ExpandedTodo {
   @State draftNotes: string = '';
   onCollapse: () => void = () => {};
   onToggleChecklist: (itemId: string) => void = (_: string) => {};
+  onAddChecklist: (title: string) => void = (_: string) => {};
+  onOpenWhen: () => void = () => {};
 
   build() {
     Column({ space: THINGS_SPACE_MD }) {
-      // Title slot (H05-B will be a multi-line editor; scaffold shows title)
       Text(this.title)
         .fontSize(17)
         .fontWeight(FontWeight.Bold)
         .fontColor(THINGS_COLOR_TEXT_PRIMARY)
-      // Notes slot (H05-C editor; scaffold = placeholder text area)
+
       TextArea({ placeholder: '备注', text: this.draftNotes })
         .fontSize(THINGS_FONT_BODY)
         .fontColor(THINGS_COLOR_TEXT_PRIMARY)
         .onChange((v: string) => { this.draftNotes = v; })
         .width('100%')
-        .height(80)
-      // Checklist slot (H06)
-      if (this.checklist.length > 0) {
-        Column({ space: THINGS_SPACE_SM }) {
-          ForEach(this.checklist, (item: ChecklistItem) => {
-            Row({ space: THINGS_SPACE_SM }) {
-              Row()
-                .width(16)
-                .height(16)
-                .borderRadius(8)
-                .border({ width: 1.5, color: item.completed ? THINGS_COLOR_ACCENT : THINGS_COLOR_CHECKBOX_STROKE })
-                .backgroundColor(item.completed ? THINGS_COLOR_ACCENT : Color.Transparent)
-                .onClick(() => this.onToggleChecklist(item.id))
-              Text(item.title)
-                .fontSize(THINGS_FONT_BODY)
-                .fontColor(item.completed ? THINGS_COLOR_TEXT_SECONDARY : THINGS_COLOR_TEXT_PRIMARY)
-            }
-            .width('100%')
-            .alignItems(VerticalAlign.Center)
-          }, (item: ChecklistItem) => item.id)
-        }
+        .height(72)
+
+      ChecklistContainer({
+        items: this.checklist,
+        onToggle: (itemId: string) => this.onToggleChecklist(itemId),
+        onAdd: (title: string) => this.onAddChecklist(title)
+      })
+
+      // Action bar (H05-D): low-weight linear actions; only emit intents.
+      Row({ space: THINGS_SPACE_MD }) {
+        Text('When')
+          .fontSize(THINGS_FONT_METADATA)
+          .fontColor(THINGS_COLOR_TEXT_SECONDARY)
+          .onClick(() => this.onOpenWhen())
+        Text('Tags').fontSize(THINGS_FONT_METADATA).fontColor(THINGS_COLOR_TEXT_SECONDARY)
+        Text('Checklist').fontSize(THINGS_FONT_METADATA).fontColor(THINGS_COLOR_TEXT_SECONDARY)
+        Text('Deadline').fontSize(THINGS_FONT_METADATA).fontColor(THINGS_COLOR_TEXT_SECONDARY)
       }
-      // collapse affordance
+      .width('100%')
+      .alignItems(VerticalAlign.Center)
+
       Text('收起')
         .fontSize(THINGS_FONT_METADATA)
         .fontColor(THINGS_COLOR_TEXT_SECONDARY)
