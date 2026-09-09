@@ -2,7 +2,7 @@ import { Todo, TodoCommands, Project, LifecycleStatus } from '../model/domain';
 import { appStore } from '../model/app';
 import { ProjectRow } from '../components/ProjectRow';
 import { TodoRow } from '../components/TodoRow';
-import { THINGS_COLOR_BG_PRIMARY, THINGS_COLOR_TEXT_PRIMARY, THINGS_COLOR_TEXT_SECONDARY, THINGS_SPACE_MD, THINGS_SPACE_LG, THINGS_SPACE_SM, THINGS_FONT_TITLE, THINGS_FONT_BODY } from '../theme/tokens';
+import { THINGS_COLOR_BG_PRIMARY, THINGS_COLOR_TEXT_PRIMARY, THINGS_COLOR_TEXT_SECONDARY, THINGS_SPACE_MD, THINGS_SPACE_LG, THINGS_SPACE_SM, THINGS_FONT_PAGE, THINGS_FONT_BODY } from '../theme/tokens';
 
 const AREA_ID = 'ar1';
 const AREA_TITLE = '生活';
@@ -26,11 +26,8 @@ struct Area {
         Row({ space: THINGS_SPACE_SM }) {
           Text('‹').fontSize(22).fontColor(THINGS_COLOR_TEXT_PRIMARY)
             .onClick(() => this.getUIContext().getRouter().back())
-          Text(AREA_TITLE).fontSize(THINGS_FONT_TITLE).fontWeight(FontWeight.Bold).fontColor(THINGS_COLOR_TEXT_PRIMARY)
+          Text(AREA_TITLE).fontSize(THINGS_FONT_PAGE).fontWeight(FontWeight.Bold).fontColor(THINGS_COLOR_TEXT_PRIMARY)
         }
-        Text('Area · 长期责任范围（非可完成目标，无进度环）')
-          .fontSize(THINGS_FONT_BODY).fontColor(THINGS_COLOR_TEXT_SECONDARY)
-
         ForEach(appStore.getProjects().filter((p: Project) => p.parentAreaId === AREA_ID), (p: Project) => {
           ProjectRow({
             title: p.title,

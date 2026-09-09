@@ -4,7 +4,7 @@ import { appStore } from '../model/app';
 import { TodoRow } from '../components/TodoRow';
 import { HeadingBlock } from '../components/HeadingBlock';
 import { ExpandedTodo } from '../components/ExpandedTodo';
-import { THINGS_COLOR_BG_PRIMARY, THINGS_COLOR_TEXT_PRIMARY, THINGS_COLOR_TEXT_SECONDARY, THINGS_SPACE_MD, THINGS_SPACE_LG, THINGS_SPACE_SM, THINGS_FONT_TITLE, THINGS_FONT_BODY } from '../theme/tokens';
+import { THINGS_COLOR_BG_PRIMARY, THINGS_COLOR_TEXT_PRIMARY, THINGS_COLOR_TEXT_SECONDARY, THINGS_SPACE_MD, THINGS_SPACE_LG, THINGS_SPACE_SM, THINGS_FONT_PAGE, THINGS_FONT_BODY } from '../theme/tokens';
 
 const PROJECT_TITLE = '高保真复刻';
 
@@ -50,7 +50,7 @@ struct Project {
             .fontColor(THINGS_COLOR_TEXT_PRIMARY)
             .onClick(() => this.getUIContext().getRouter().back())
           Text(PROJECT_TITLE)
-            .fontSize(THINGS_FONT_TITLE)
+            .fontSize(THINGS_FONT_PAGE)
             .fontWeight(FontWeight.Bold)
             .fontColor(THINGS_COLOR_TEXT_PRIMARY)
         }

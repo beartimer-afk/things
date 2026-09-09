@@ -2,7 +2,7 @@
 import { Todo, TodoCommands, LifecycleStatus } from '../model/domain';
 import { appStore } from '../model/app';
 import { TodoRow } from '../components/TodoRow';
-import { THINGS_COLOR_BG_PRIMARY, THINGS_COLOR_TEXT_PRIMARY, THINGS_COLOR_TEXT_SECONDARY, THINGS_SPACE_MD, THINGS_SPACE_LG, THINGS_SPACE_SM, THINGS_FONT_TITLE, THINGS_FONT_BODY } from '../theme/tokens';
+import { THINGS_COLOR_BG_PRIMARY, THINGS_COLOR_TEXT_PRIMARY, THINGS_COLOR_TEXT_SECONDARY, THINGS_SPACE_MD, THINGS_SPACE_LG, THINGS_SPACE_SM, THINGS_FONT_PAGE, THINGS_FONT_BODY } from '../theme/tokens';
 
 @Entry
 @Component
@@ -20,10 +20,8 @@ struct Anytime {
     Column({ space: THINGS_SPACE_MD }) {
       Row({ space: THINGS_SPACE_SM }) {
         Text('‹').fontSize(22).fontColor(THINGS_COLOR_TEXT_PRIMARY).onClick(() => this.getUIContext().getRouter().back())
-        Text('Anytime').fontSize(THINGS_FONT_TITLE).fontWeight(FontWeight.Bold).fontColor(THINGS_COLOR_TEXT_PRIMARY)
+        Text('Anytime').fontSize(THINGS_FONT_PAGE).fontWeight(FontWeight.Bold).fontColor(THINGS_COLOR_TEXT_PRIMARY)
       }
-      Text('已激活 · 可行动（非“有日期/没日期”的判断）')
-        .fontSize(THINGS_FONT_BODY).fontColor(THINGS_COLOR_TEXT_SECONDARY)
       List({ space: 0 }) {
         ForEach(this.items, (t: Todo) => {
           ListItem() {
