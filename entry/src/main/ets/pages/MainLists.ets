@@ -2,7 +2,7 @@ import { Todo, Project, Area } from '../model/domain';
 import { appStore } from '../model/app';
 import { TodoRow } from '../components/TodoRow';
 import { AreaRow } from '../components/AreaRow';
-import { THINGS_COLOR_BG_PRIMARY, THINGS_COLOR_TEXT_PRIMARY, THINGS_COLOR_TEXT_SECONDARY, THINGS_COLOR_ACCENT, THINGS_SPACE_MD, THINGS_SPACE_LG, THINGS_SPACE_SM, THINGS_FONT_TITLE, THINGS_FONT_BODY } from '../theme/tokens';
+import { THINGS_COLOR_BG_PRIMARY, THINGS_COLOR_TEXT_PRIMARY, THINGS_COLOR_TEXT_SECONDARY, THINGS_SPACE_XS, THINGS_SPACE_SM, THINGS_SPACE_MD, THINGS_SPACE_LG, THINGS_PADDING_PAGE, THINGS_FONT_PAGE, THINGS_FONT_TITLE, THINGS_FONT_BODY } from '../theme/tokens';
 
 // Main Lists = global entry / organization overview (NOT a "all tasks" database page).
 // System list entries are Projections (queries). Quick Find is a global overlay (navigation + deep search).
@@ -26,7 +26,7 @@ struct MainLists {
   @Builder
   navRow(label: string, url: string) {
     Row() {
-      Text(label).fontSize(THINGS_FONT_BODY).fontColor(THINGS_COLOR_TEXT_PRIMARY).layoutWeight(1)
+      Text(label).fontSize(THINGS_FONT_TITLE).fontColor(THINGS_COLOR_TEXT_PRIMARY).layoutWeight(1)
     }
     .width('100%')
     .padding({ left: THINGS_SPACE_SM, right: THINGS_SPACE_SM, top: 12, bottom: 12 })
@@ -35,19 +35,18 @@ struct MainLists {
 
   build() {
     Stack() {
-      Column({ space: THINGS_SPACE_MD }) {
+      Column({ space: THINGS_SPACE_XS }) {
         Text('Things')
-          .fontSize(THINGS_FONT_TITLE)
+          .fontSize(THINGS_FONT_PAGE)
           .fontWeight(FontWeight.Bold)
           .fontColor(THINGS_COLOR_TEXT_PRIMARY)
-        Text('Main Lists · 全局入口（非数据库页）')
-          .fontSize(THINGS_FONT_BODY)
-          .fontColor(THINGS_COLOR_TEXT_SECONDARY)
+          .padding({ top: 8, bottom: 16 })
 
-        // Quick Find entry
-        Text('搜索 …')
+        // Quick Find entry (search affordance)
+        Text('搜索')
           .fontSize(THINGS_FONT_BODY)
           .fontColor(THINGS_COLOR_TEXT_SECONDARY)
+          .padding({ top: 4, bottom: 12 })
           .onClick(() => { this.quickFind = true; this.query = ''; this.results = []; })
 
         this.navRow('Inbox', 'pages/Inbox')
@@ -70,7 +69,7 @@ struct MainLists {
       }
       .width('100%')
       .height('100%')
-      .padding(THINGS_SPACE_LG)
+      .padding(THINGS_PADDING_PAGE)
       .backgroundColor(THINGS_COLOR_BG_PRIMARY)
       .alignItems(HorizontalAlign.Start)
 

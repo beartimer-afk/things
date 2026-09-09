@@ -6,7 +6,7 @@ import { ExpandedTodo } from '../components/ExpandedTodo';
 import { WhenPicker } from '../components/WhenPicker';
 import { DeadlinePicker } from '../components/DeadlinePicker';
 import { TagPicker } from '../components/TagPicker';
-import { THINGS_COLOR_BG_PRIMARY, THINGS_COLOR_TEXT_PRIMARY, THINGS_COLOR_TEXT_SECONDARY, THINGS_COLOR_ACCENT, THINGS_SPACE_MD, THINGS_SPACE_LG, THINGS_SPACE_SM, THINGS_FONT_TITLE, THINGS_FONT_BODY } from '../theme/tokens';
+import { THINGS_COLOR_BG_PRIMARY, THINGS_COLOR_TEXT_PRIMARY, THINGS_COLOR_TEXT_SECONDARY, THINGS_COLOR_ACCENT, THINGS_SPACE_MD, THINGS_SPACE_LG, THINGS_SPACE_SM, THINGS_FONT_PAGE, THINGS_FONT_TITLE, THINGS_FONT_BODY } from '../theme/tokens';
 
 const store = appStore;
 
@@ -131,7 +131,7 @@ struct Today {
             .fontColor(THINGS_COLOR_TEXT_PRIMARY)
             .onClick(() => this.getUIContext().getRouter().back())
           Text('Today')
-            .fontSize(THINGS_FONT_TITLE)
+            .fontSize(THINGS_FONT_PAGE)
             .fontWeight(FontWeight.Bold)
             .fontColor(THINGS_COLOR_TEXT_PRIMARY)
             .layoutWeight(1)
@@ -140,9 +140,6 @@ struct Today {
             .fontColor(THINGS_COLOR_ACCENT)
             .onClick(() => { this.selectionMode = !this.selectionMode; this.selectedIds = []; })
         }
-        Text('注意力工作集 · Projection（非 Parent）')
-          .fontSize(THINGS_FONT_BODY)
-          .fontColor(THINGS_COLOR_TEXT_SECONDARY)
 
         List({ space: 0 }) {
           ForEach(this.items, (t: Todo) => {

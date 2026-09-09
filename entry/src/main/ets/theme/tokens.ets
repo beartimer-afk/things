@@ -14,8 +14,11 @@ export const THINGS_COLOR_SELECTED_BG: string = '#E8F0FE';     // multi-select r
 // Spacing (vp)
 export const THINGS_SPACE_XS: number = 4;
 export const THINGS_SPACE_SM: number = 8;
-export const THINGS_SPACE_MD: number = 16;
-export const THINGS_SPACE_LG: number = 24;
+export const THINGS_SPACE_MD: number = 12;
+export const THINGS_SPACE_LG: number = 20;
+
+// Page padding (vp), low-chrome: whitespace carries the hierarchy.
+export const THINGS_PADDING_PAGE: number = 20;
 
 // Radius (vp)
 export const THINGS_RADIUS_MD: number = 12;
@@ -25,6 +28,8 @@ export const THINGS_HIT_TARGET: number = 48;
 export const THINGS_CHECKBOX_VISUAL: number = 18;
 
 // Typography (fp)
-export const THINGS_FONT_TITLE: number = 16;
+export const THINGS_FONT_PAGE: number = 30;    // large page title (Today / Things)
+export const THINGS_FONT_SECTION: number = 20; // section heading
+export const THINGS_FONT_TITLE: number = 17;   // todo title
 export const THINGS_FONT_BODY: number = 15;
 export const THINGS_FONT_METADATA: number = 12;

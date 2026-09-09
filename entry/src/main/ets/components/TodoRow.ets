@@ -1,5 +1,5 @@
 import { TodoCheckbox } from './TodoCheckbox';
-import { THINGS_COLOR_TEXT_PRIMARY, THINGS_COLOR_TEXT_SECONDARY, THINGS_COLOR_DEADLINE, THINGS_COLOR_ACCENT, THINGS_COLOR_CHECKBOX_STROKE, THINGS_COLOR_SELECTED_BG, THINGS_HIT_TARGET, THINGS_SPACE_SM, THINGS_SPACE_XS, THINGS_FONT_BODY, THINGS_FONT_METADATA } from '../theme/tokens';
+import { THINGS_COLOR_TEXT_PRIMARY, THINGS_COLOR_TEXT_SECONDARY, THINGS_COLOR_DEADLINE, THINGS_COLOR_ACCENT, THINGS_COLOR_CHECKBOX_STROKE, THINGS_COLOR_SELECTED_BG, THINGS_HIT_TARGET, THINGS_SPACE_SM, THINGS_SPACE_XS, THINGS_FONT_TITLE, THINGS_FONT_METADATA } from '../theme/tokens';
 
 // H03 TodoRow + H04 metadata slots + multi-select presentation (H05.3).
 //   CheckboxSlot | ContentColumn(TitleLine + SecondaryLine) | Trailing
@@ -37,7 +37,7 @@ export struct TodoRow {
       Column({ space: THINGS_SPACE_XS }) {
         Row({ space: 6 }) {
           Text(this.title)
-            .fontSize(THINGS_FONT_BODY)
+            .fontSize(THINGS_FONT_TITLE)
             .fontColor(this.checked ? THINGS_COLOR_TEXT_SECONDARY : THINGS_COLOR_TEXT_PRIMARY)
           if (this.repeat) {
             Text('repeat')
@@ -71,7 +71,7 @@ export struct TodoRow {
       }
     }
     .width('100%')
-    .padding({ left: THINGS_SPACE_SM, right: THINGS_SPACE_SM, top: 10, bottom: 10 })
+    .padding({ left: THINGS_SPACE_SM, right: THINGS_SPACE_SM, top: 8, bottom: 8 })
     .backgroundColor(this.selectionMode && this.selected ? THINGS_COLOR_SELECTED_BG : Color.Transparent)
     .alignItems(VerticalAlign.Center)
     .id('todo_row.root')
